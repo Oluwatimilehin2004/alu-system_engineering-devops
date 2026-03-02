@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Create a redirection from /redirect_me to the homepage
+
+# Install the Nginx server silently
+sudo apt update -y > /dev/null 2>&1
+sudo apt install nginx -y > /dev/null 2>&1
+
+# insert/appends redirect block below the match word(server_name _;)
+sudo sed -i '/server_name _;/a \
+    location /redirect_me {\
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\
+    }' /etc/nginx/sites-available/default
+
+
+# Restart server
+service nginx restart > /dev/null 
