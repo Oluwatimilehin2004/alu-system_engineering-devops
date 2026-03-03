@@ -1,16 +1,14 @@
 #!/usr/bin/env bash
-# Create a redirection from /redirect_me to the homepage
+# Configures an Nginx server so that /redirect_me redirects to another page
+# The redirection is a "301 Moved Permanently"
 
-# Install the Nginx server silently
-sudo apt update -y > /dev/null 2>&1
-sudo apt install nginx -y > /dev/null 2>&1
+sudo apt-get update
+sudo apt-get -y install nginx
+sudo ufw allow 'Nginx HTTP'
+echo "Holberton School" | sudo tee /var/www/html/index.html > /dev/null
 
-# insert/appends redirect block below the match word(server_name _;)
-sudo sed -i "/server_name _;/a \
-    location /redirect_me/ {\
-        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\
-    }" /etc/nginx/sites-available/default
+# Add redirect rule for /redirect_me using string replacement (more reliable)
+new_string="server_name _;\n\tlocation /redirect_me {\n\t\treturn 301 https://cinemora-cyan.vercel.app;\n\t}\n"
+sudo sed -i "s|server_name _;|$new_string|" /etc/nginx/sites-available/default
 
-
-# Restart server
-sudo service nginx restart > /dev/null 2>&1 
+sudo service nginx restart
