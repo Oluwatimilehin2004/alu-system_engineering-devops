@@ -9,7 +9,7 @@ sudo apt-get install -y nginx
 sudo ufw allow 'Nginx HTTP'
 
 # Create custom 404 page
-echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html > /dev/null
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/404-full.html > /dev/null
 
 # Also save the full HTML version as a backup/reference
 sudo tee /var/www/html/404-full.html > /dev/null << 'EOF'
