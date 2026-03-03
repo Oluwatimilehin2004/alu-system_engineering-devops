@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Urbanist:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(145deg, #f8faff 0%, #f0f4ff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+            line-height: 1.6;
+            color: #1e293b;
+        }
+        
+        /* Abstract background elements */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.5;
+        }
+        
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: #a78bfa;
+            top: -200px;
+            right: -100px;
+            animation: float 25s ease-in-out infinite;
+        }
+        
+        .orb-2 {
+            width: 450px;
+            height: 450px;
+            background: #38bdf8;
+            bottom: -200px;
+            left: -100px;
+            animation: float 20s ease-in-out infinite reverse;
+        }
+        
+        .orb-3 {
+            width: 350px;
+            height: 350px;
+            background: #f472b6;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: float 30s ease-in-out infinite;
+            opacity: 0.3;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(40px, -40px) scale(1.1); }
+            50% { transform: translate(-20px, 30px) scale(0.9); }
+            75% { transform: translate(-40px, -20px) scale(1.05); }
+        }
+        
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 650px;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 48px;
+            box-shadow: 
+                0 30px 60px -15px rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+                0 0 0 2px rgba(255, 255, 255, 0.1);
+            padding: 60px 50px;
+            text-align: center;
+            animation: reveal 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        @keyframes reveal {
+            0% {
+                opacity: 0;
+                transform: scale(0.96) translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        /* Large 404 number with Urbanist */
+        .error-code {
+            font-family: 'Urbanist', sans-serif;
+            font-size: 180px;
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(135deg, #1e293b 0%, #475569 50%, #1e293b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+            letter-spacing: -5px;
+            position: relative;
+            display: inline-block;
+            text-shadow: 0 20px 30px rgba(0, 0, 0, 0.05);
+        }
+        
+        .error-code::after {
+            content: '404';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #a78bfa 0%, #38bdf8 50%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0.3;
+            filter: blur(8px);
+            z-index: -1;
+        }
+        
+        /* Headings with Urbanist */
+        h1 {
+            font-family: 'Urbanist', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+        
+        /* Body text with Poppins */
+        .description {
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            color: #475569;
+            margin-bottom: 35px;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
+        }
+        
+        /* Search box */
+        .search-group {
+            background: white;
+            border-radius: 100px;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+        
+        .search-group:focus-within {
+            box-shadow: 0 15px 40px -8px rgba(79, 70, 229, 0.2);
+            border-color: #a78bfa;
+        }
+        
+        .search-icon {
+            padding: 0 18px;
+            display: flex;
+            align-items: center;
+            color: #94a3b8;
+        }
+        
+        .search-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+        
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 16px 5px 16px 0;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            outline: none;
+            color: #0f172a;
+        }
+        
+        .search-input::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .search-button {
+            background: #0f172a;
+            color: white;
+            border: none;
+            border-radius: 100px;
+            padding: 12px 32px;
+            font-weight: 600;
+            font-size: 15px;
+            font-family: 'Urbanist', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-right: 5px;
+            white-space: nowrap;
+            letter-spacing: 0.3px;
+        }
+        
+        .search-button:hover {
+            background: #1e293b;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -8px #0f172a80;
+        }
+        
+        .search-button:active {
+            transform: translateY(0);
+        }
+        
+        /* Navigation buttons */
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            border: none;
+            cursor: pointer;
+            font-family: 'Urbanist', sans-serif;
+        }
+        
+        .btn-primary {
+            background: #0f172a;
+            color: white;
+            box-shadow: 0 10px 20px -8px #0f172a;
+        }
+        
+        .btn-primary:hover {
+            background: #1e293b;
+            transform: translateY(-3px);
+            box-shadow: 0 20px 30px -10px #0f172a;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #0f172a;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .btn-secondary:hover {
+            border-color: #94a3b8;
+            background: #f8fafc;
+            transform: translateY(-3px);
+            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Helpful links */
+        .help-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .help-link {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .help-link:hover {
+            color: #0f172a;
+        }
+        
+        .help-link svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+        
+        /* Fun stats */
+        .fun-fact {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .fun-fact-dot {
+            width: 4px;
+            height: 4px;
+            background: #cbd5e1;
+            border-radius: 50%;
+        }
+        
+        /* Icon styles */
+        .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 25px;
+                border-radius: 32px;
+            }
+            
+            .error-code {
+                font-size: 120px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            .description {
+                font-size: 16px;
+            }
+            
+            .search-group {
+                flex-direction: column;
+                background: transparent;
+                box-shadow: none;
+                padding: 0;
+                gap: 12px;
+            }
+            
+            .search-input {
+                width: 100%;
+                background: white;
+                border-radius: 100px;
+                padding: 16px 20px;
+                border: 1px solid #e2e8f0;
+            }
+            
+            .search-button {
+                width: 100%;
+                margin: 0;
+                padding: 16px;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .help-links {
+                gap: 20px;
+            }
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(145deg, #0b1120 0%, #111827 100%);
+                color: #e2e8f0;
+            }
+            
+            .container {
+                background: rgba(17, 24, 39, 0.85);
+                backdrop-filter: blur(12px);
+                box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.5);
+            }
+            
+            .error-code {
+                background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 50%, #e2e8f0 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            
+            h1 {
+                color: #f1f5f9;
+            }
+            
+            .description {
+                color: #94a3b8;
+            }
+            
+            .search-group {
+                background: #1e293b;
+                border-color: #334155;
+            }
+            
+            .search-input {
+                color: #f1f5f9;
+            }
+            
+            .search-input::placeholder {
+                color: #64748b;
+            }
+            
+            .btn-secondary {
+                background: #1e293b;
+                color: #f1f5f9;
+                border-color: #334155;
+            }
+            
+            .help-links {
+                border-top-color: #334155;
+            }
+            
+            .help-link {
+                color: #94a3b8;
+            }
+            
+            .help-link:hover {
+                color: #f1f5f9;
+            }
+            
+            .fun-fact {
+                color: #64748b;
+            }
+            
+            .fun-fact-dot {
+                background: #475569;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Abstract orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    
+    <!-- Main card -->
+    <div class="container">
+        <!-- 404 with subtle blur effect - Urbanist 900 -->
+        <div class="error-code" aria-label="404">404</div>
+        
+        <!-- Heading - Urbanist 800 -->
+        <h1>Looks like you're lost</h1>
+        
+        <!-- Description - Poppins 400 -->
+        <p class="description">
+            The page you're looking for doesn't exist or has been moved. 
+            Let's get you back on track.
+        </p>
+        
+        <!-- Search box with SVG icon -->
+        <div class="search-group">
+            <span class="search-icon">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+            </span>
+            <input type="text" class="search-input" placeholder="What are you looking for?" aria-label="Search">
+            <button class="search-button" onclick="handleSearch()">Search</button>
+        </div>
+        
+        <!-- Navigation options with SVG icons - Urbanist 600 -->
+        <div class="nav-buttons">
+            <a href="/" class="btn btn-primary">
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                Go Home
+            </a>
+            <a href="javascript:history.back()" class="btn btn-secondary">
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Go Back
+            </a>
+        </div>
+        
+        <!-- Helpful links with SVG icons - Poppins 500 -->
+        <div class="help-links">
+            <a href="/about" class="help-link">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="12" x2="12" y2="16"/>
+                    <line x1="12" y1="8" x2="12.01" y2="8"/>
+                </svg>
+                About
+            </a>
+            <a href="/contact" class="help-link">
+                <svg viewBox="0 0 24 24">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                Contact
+            </a>
+            <a href="/help" class="help-link">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                Help Center
+            </a>
+            <a href="/blog" class="help-link">
+                <svg viewBox="0 0 24 24">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10 9 9 9 8 9"/>
+                </svg>
+                Blog
+            </a>
+        </div>
+        
+        <!-- Fun fact with SVG icons - Poppins 400 -->
+        <div class="fun-fact">
+            <span class="icon">
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <circle cx="12" cy="16" r="1" fill="currentColor"/>
+                </svg>
+            </span>
+            <span>Fun fact: This page is visited by</span>
+            <span class="fun-fact-dot"></span>
+            <span id="visitorCount">0</span>
+            <span>lost souls today</span>
+            <span class="icon">
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <circle cx="12" cy="16" r="1" fill="currentColor"/>
+                </svg>
+            </span>
+        </div>
+    </div>
+    
+    <script>
+        // Simple search handler
+        function handleSearch() {
+            const searchTerm = document.querySelector('.search-input').value;
+            if (searchTerm.trim()) {
+                window.location.href = `/search?q=${encodeURIComponent(searchTerm)}`;
+            }
+        }
+        
+        // Allow Enter key
+        document.querySelector('.search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleSearch();
+            }
+        });
+        
+        // Fun random visitor counter (just for show)
+        function updateVisitorCount() {
+            const count = Math.floor(Math.random() * 100) + 1;
+            document.getElementById('visitorCount').textContent = count;
+        }
+        
+        // Update every few seconds for fun
+        updateVisitorCount();
+        setInterval(updateVisitorCount, 5000);
+    </script>
+</body>
+</html>
