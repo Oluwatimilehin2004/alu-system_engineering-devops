@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# 1-install_load_balancer
+# Installs and configures HAProxy to load balance web-01 and web-02 using round-robin
+
+set -e
+
+echo "Configuring HAProxy on $(hostname)..."
+
+# Set your web servers IPs here
+WEB01_IP="54.86.55.58"
+WEB02_IP="98.81.240.103"
+
+# Install HAProxy silently
+sudo apt update -y > /dev/null 2>&1
+sudo apt install -y haproxy > /dev/null 2>&1
+
+# Backup existing haproxy.cfg
+sudo cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bak 2>/dev/null || true
+
+# Remove existing backend/frontend config for our web servers
+sudo sed -i '/frontend http_front/,/^$/d' /etc/haproxy/haproxy.cfg
+sudo sed -i '/backend web-backend/,/^$/d' /etc/haproxy/haproxy.cfg
+
+# Append new HAProxy configuration
+sudo tee -a /etc/haproxy/haproxy.cfg > /dev/null <<EOF
+
+frontend http_front
+    bind *:80
+    default_backend web-backend
+
+backend web-backend
+    balance roundrobin
+    server web01 ${WEB01_IP}:80 check
+    server web02 ${WEB02_IP}:80 check
+EOF
+
+# Enable HAProxy at startup
+sudo systemctl enable haproxy > /dev/null 2>&1 || true
+
+# Check HAProxy configuration
+sudo haproxy -f /etc/haproxy/haproxy.cfg -c
+
+# Reload HAProxy gracefully if running, otherwise start
+if pgrep haproxy > /dev/null; then
+    # Get all HAProxy PIDs and format them correctly
+    OLD_PIDS=$(pgrep -d',' haproxy)
+    # Remove any trailing comma that might be present
+    OLD_PIDS=${OLD_PIDS%,}
+    sudo systemctl reload haproxy || sudo service haproxy reload || sudo haproxy -f /etc/haproxy/haproxy.cfg -sf $OLD_PIDS
+else
+    sudo systemctl start haproxy || sudo service haproxy start || sudo haproxy -f /etc/haproxy/haproxy.cfg
+fi
+
+# Verify HAProxy is running
+sudo systemctl status haproxy --no-pager
+
+echo "HAProxy configured to load balance web-01 and web-02"
