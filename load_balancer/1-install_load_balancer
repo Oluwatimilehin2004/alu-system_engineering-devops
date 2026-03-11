@@ -1,53 +1,54 @@
 #!/usr/bin/env bash
-# 1-install_load_balancer
-# Dynamically configures HAProxy to load balance web-01 and web-02 using round-robin
-# Usage: ./1-install_load_balancer <web01_ip> <web02_ip>
+# 1-install_load_balancer - Installs and configures HAProxy with round-robin load balancing between web-01 and web-02
 
-set -e
-
-# Check if IPs are provided
-if [ $# -ne 2 ]; then
+if [ "$#" -ne 2 ]
+then
     echo "Usage: $0 <web01_ip> <web02_ip>"
     echo "Example: $0 54.86.55.58 98.81.240.103"
     exit 1
 fi
 
-WEB01_IP=$1
-WEB02_IP=$2
+WEB01_IP="$1"
+WEB02_IP="$2"
 
-# Get student ID from hostname (removes -lb-01 or similar)
-STUDENT_ID=$(hostname | cut -d'-' -f1)
+# Get student ID from hostname
+STUDENT_ID="$(hostname | cut -d'-' -f1)"
 
 echo "Configuring HAProxy on $(hostname) with Student ID: $STUDENT_ID"
 
-# Update package list and install HAProxy
-echo "Installing HAProxy..."
-sudo apt update -y
-sudo apt install -y haproxy
+# Install HAProxy
+sudo apt-get update -y
+sudo apt-get install -y haproxy
 
-# Backup original configuration
-sudo cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bak 2>/dev/null || true
+# Enable HAProxy
+sudo systemctl enable haproxy
 
-# Create new HAProxy configuration
+# Backup config if it exists
+if [ -f /etc/haproxy/haproxy.cfg ]
+then
+    sudo cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bak
+fi
+
+# Write configuration
 sudo tee /etc/haproxy/haproxy.cfg > /dev/null <<EOF
 global
-    log /dev/log local0
-    log /dev/log local1 notice
+    log /dev/log    local0
+    log /dev/log    local1 notice
     chroot /var/lib/haproxy
-    stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
+    stats socket /run/haproxy/admin.sock mode 660 level admin
     stats timeout 30s
     user haproxy
     group haproxy
     daemon
 
 defaults
-    log global
-    mode http
-    option httplog
-    option dontlognull
+    log     global
+    mode    http
+    option  httplog
+    option  dontlognull
     timeout connect 5000
-    timeout client 50000
-    timeout server 50000
+    timeout client  50000
+    timeout server  50000
     errorfile 400 /etc/haproxy/errors/400.http
     errorfile 403 /etc/haproxy/errors/403.http
     errorfile 408 /etc/haproxy/errors/408.http
@@ -59,63 +60,23 @@ defaults
 frontend http_front
     bind *:80
     default_backend web-backend
-    option forwardfor
-    http-request set-header X-Forwarded-Port %[dst_port]
 
 backend web-backend
     balance roundrobin
     server ${STUDENT_ID}-web-01 ${WEB01_IP}:80 check
     server ${STUDENT_ID}-web-02 ${WEB02_IP}:80 check
-
-listen stats
-    bind :8080
-    mode http
-    stats enable
-    stats uri /stats
-    stats refresh 10s
 EOF
 
-# Validate configuration
-echo "Validating HAProxy configuration..."
-sudo haproxy -f /etc/haproxy/haproxy.cfg -c
+# Start HAProxy
+sudo systemctl start haproxy
 
-# Enable HAProxy to start on boot
-sudo systemctl enable haproxy
-
-# Start or reload HAProxy
-if systemctl is-active --quiet haproxy; then
-    echo "Reloading HAProxy..."
-    sudo systemctl reload haproxy
+# Verify
+if sudo systemctl is-active --quiet haproxy
+then
+    echo "HAProxy configured successfully"
+    exit 0
 else
-    echo "Starting HAProxy..."
-    sudo systemctl start haproxy
-fi
-
-# Check status
-sleep 2
-if systemctl is-active --quiet haproxy; then
-    echo "✅ HAProxy is running successfully"
-    echo "Load balancer configured to distribute traffic between:"
-    echo "  - ${STUDENT_ID}-web-01 (${WEB01_IP})"
-    echo "  - ${STUDENT_ID}-web-02 (${WEB02_IP})"
-    echo ""
-    echo "Testing round-robin distribution:"
-    echo "--------------------------------"
-    for i in {1..4}; do
-        curl -sI http://localhost | grep -i "X-Served-By" || echo "Request $i: No X-Served-By header"
-        sleep 1
-    done
-else
-    echo "❌ HAProxy failed to start"
-    sudo systemctl status haproxy --no-pager
+    echo "HAProxy failed to start"
     exit 1
 fi
 
-echo ""
-echo "HAProxy management commands:"
-echo "  sudo systemctl status haproxy  - Check status"
-echo "  sudo systemctl reload haproxy  - Reload configuration"
-echo "  sudo systemctl stop haproxy    - Stop HAProxy"
-echo "  sudo systemctl start haproxy   - Start HAProxy"
-echo ""
-echo "Stats page: http://$(hostname -I | awk '{print $1}'):8080/stats"
